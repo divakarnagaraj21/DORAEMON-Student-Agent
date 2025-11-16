@@ -1,0 +1,114 @@
+# DORAEMON Student Agent
+# AI personal counselor, to-do tracker, mood-based recommendations, meditation, spiritual guidance
+
+import random
+from datetime import datetime
+import matplotlib.pyplot as plt
+
+# ======================
+# Storage for tasks and moods
+# ======================
+tasks_db = []
+mood_logs = []
+
+# ======================
+# To-Do Agent
+# ======================
+class ToDoAgent:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, task):
+        self.tasks.append({'task': task, 'completed': False})
+
+    def complete_task(self, index):
+        if 0 <= index < len(self.tasks):
+            self.tasks[index]['completed'] = True
+
+    def show_tasks(self):
+        for i, t in enumerate(self.tasks):
+            status = "✅" if t['completed'] else "❌"
+            print(f"{i+1}. {t['task']} {status}")
+
+todo_agent = ToDoAgent()
+
+# ======================
+# Mood-Based Recommendation Agent
+# ======================
+class MoodAgent:
+    def recommend_activity(self, mood):
+        recommendations = {
+            'stressed': ["Watch a meditation video", "Do breathing exercises"],
+            'happy': ["Try a new skill", "Share knowledge with friends"],
+            'sad': ["Listen to uplifting music", "Go for a short walk"],
+            'neutral': ["Read self-growth content", "Plan your day"]
+        }
+        return recommendations.get(mood.lower(), ["Take a short break"])
+
+mood_agent = MoodAgent()
+
+# ======================
+# Spiritual Guidance Agent
+# ======================
+class SpiritualAgent:
+    def provide_guidance(self, religion):
+        guidance = {
+            'hindu': "Read a verse from Bhagavad Gita or meditate for 10 minutes.",
+            'christian': "Read a chapter from the Bible and reflect on it.",
+            'islam': "Recite a short Surah or do daily prayers.",
+            'buddhist': "Practice mindfulness meditation or read a Dharma teaching."
+        }
+        return guidance.get(religion.lower(), "Take some quiet time to reflect.")
+
+spiritual_agent = SpiritualAgent()
+
+# ======================
+# DORAEMON Orchestrator Agent
+# ======================
+class DORAEMON:
+    def daily_session(self, tasks, mood, religion):
+        print("\n--- Today's To-Do List ---")
+        for t in tasks:
+            todo_agent.add_task(t)
+        todo_agent.show_tasks()
+
+        print("\n--- Mood-Based Recommendations ---")
+        for rec in mood_agent.recommend_activity(mood):
+            print(f"- {rec}")
+
+        print("\n--- Spiritual Guidance ---")
+        print(spiritual_agent.provide_guidance(religion))
+
+        # Save logs
+        mood_logs.append({'date': datetime.now().strftime("%Y-%m-%d"), 'mood': mood})
+        tasks_db.append({'date': datetime.now().strftime("%Y-%m-%d"), 'tasks': tasks})
+
+doraemon = DORAEMON()
+
+# ======================
+# Demo Usage
+# ======================
+if __name__ == "__main__":
+    mood = "stressed"
+    religion = "hindu"
+    tasks_for_today = [
+        "Finish Linear Algebra homework",
+        "Practice meditation for 10 minutes",
+        "Read a chapter of the Gita",
+        "Plan tomorrow's schedule"
+    ]
+
+    doraemon.daily_session(tasks_for_today, mood, religion)
+
+    # ======================
+    # Visualization
+    # ======================
+    dates = [entry['date'] for entry in mood_logs]
+    moods = [entry['mood'] for entry in mood_logs]
+
+    plt.figure(figsize=(6,4))
+    plt.bar(dates, [1]*len(moods), color='skyblue')
+    plt.title("Mood Logs Over Days")
+    plt.ylabel("Count")
+    plt.xlabel("Date")
+    plt.show()
